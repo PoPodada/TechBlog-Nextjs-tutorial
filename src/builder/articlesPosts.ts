@@ -3,6 +3,18 @@ import {JSDOM} from "jsdom";
 
 const parser = new Parser();
 
+export type Member = {
+  feedLinks:string[]
+  name:string
+}
+export type Post = {
+  url:string
+  title:string
+  publishedAt:string
+  ogImageUrl:string
+  author:string
+}
+
 export const parseRSSFeed = async (url: string) => {
   const feed = await parser.parseURL(url);
 
@@ -22,3 +34,22 @@ export const getOgImagePath = async (url: string) => {
   const documentMetadata = document.querySelector("meta[property='og:image']")?.getAttribute("content")
   return documentMetadata; 
 };
+
+export const getArticlePost = async(member:Member):Promise<Post[]> => {
+  const member.feedLinks.map(async(feedUrl:string)=>{
+    const articles = await parseRSSFeed(feedUrl);
+    articles.map(async(article) => {
+      const ogImageUrl = await getOgImagePath(article.url);
+      return{
+          title: article.title,
+          url: article.url,
+          publishedAt: article.publishedAt,
+          ogImageUrl: ogImageUrl?ogImageUrl:"",
+          author:member.name
+      }
+    })
+  })
+  
+  
+  
+}
