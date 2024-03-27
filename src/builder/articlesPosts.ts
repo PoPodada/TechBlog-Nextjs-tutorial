@@ -7,7 +7,8 @@ export const parseRSSFeed = async (url: string) => {
   return feed.items.map((item:any) => {
     return {
         title:item.title,
-        url:item.link
+        url:item.link,
+        publishedAt:item.pubDate
     };
   });
   
