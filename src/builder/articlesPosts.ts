@@ -1,5 +1,7 @@
 import Parser from "rss-parser";
 import { JSDOM } from "jsdom";
+import fs from "fs";
+import {members} from "../../config/members"
 
 const parser = new Parser();
 
@@ -61,3 +63,10 @@ export const getMembersPosts = async (members: Member[]): Promise<Post[]> => {
   const memberPostsEachBymember = await Promise.all(members.map(getArticlePost))
   return memberPostsEachBymember.flat(1);
 };
+
+if(require.main === module){
+  (async ()=> {
+    const membersPosts = await getMembersPosts(members)
+  fs.writeFileSync("posts/membersPosts.json", JSON.stringify(membersPosts))
+})()
+}
